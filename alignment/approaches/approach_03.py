@@ -16,7 +16,6 @@ def generate_score_matrix(
 ) -> np.array:
     combination_functions: Dict[str, Callable[[List[str], List[str]], np.array]] = {
         "fuzz": generate_fuzz_score_matrix,
-        "naive_distance": generate_naive_distance_score_matrix,
     }
 
     update_functions: Dict[str, Callable[[np.array, float], np.array]] = {
@@ -53,22 +52,6 @@ def generate_fuzz_score_matrix(sequence_1: List[str], sequence_2: List[str]) -> 
     for i, string_1 in enumerate(sequence_1):
         for j, string_2 in enumerate(sequence_2):
             score_matrix[i, j] = fuzz.ratio(string_1, string_2) / 100
-    return score_matrix
-
-
-# NOTE: this is a naive implementation, and a better approach would assign scores based on distance from the last
-# best alignment, not from the diagonal; the best approach would include the previous distance score when determining
-# the last best alignment
-def generate_naive_distance_score_matrix(
-        sequence_1: List[str],
-        sequence_2: List[str],
-        penalty_scale: int = 10,
-) -> np.array:
-    score_matrix = np.zeros((len(sequence_1), len(sequence_2)))
-    for i, _ in enumerate(sequence_1):
-        for j, _ in enumerate(sequence_2):
-            penalty = abs(i - j) / penalty_scale
-            score_matrix[i, j] = max(1.0 - penalty, 0)
     return score_matrix
 
 

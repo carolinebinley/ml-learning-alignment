@@ -168,24 +168,25 @@ def choose_final_span_alignments(span_alignments: List[SpanAlignment]) -> List[S
 
 
 def align_sequences(sequence_1: List[str], sequence_2: List[str]) -> List[StringAlignment]:
-    # choose initial 'seed' alignments
+    # choose seed span alignments
     seed_score_matrix = generate_score_matrix(sequence_1, sequence_2)
     seed_span_alignments = choose_span_alignments(seed_score_matrix)
 
-    # identify potential improved alignments
+    # identify potential improved span alignments
     suggested_span_alignments = suggest_potential_span_alignments(
         seed_span_alignments,
         len(sequence_1),
         len(sequence_2),
     )
 
-    # score potential improved alignments
+    # score potential improved span alignments
     suggested_span_alignments = score_alignments(
         suggested_span_alignments,
         sequence_1,
         sequence_2,
     )
-    # choose best improved alignments
+
+    # choose best span alignments
     final_span_alignments = choose_final_span_alignments(seed_span_alignments + suggested_span_alignments)
 
     return span_alignments_to_string_alignments(final_span_alignments, sequence_1, sequence_2)
